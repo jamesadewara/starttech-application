@@ -16,8 +16,14 @@ COPY go.mod go.sum ./
 # Download dependencies. This layer gets cached unless go.mod/go.sum change
 RUN go mod download
 
+# Install swag CLI tool to dynamically generate swagger docs at build-time
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.6
+
 # Copy the rest of the application source code
-COPY  .
+COPY . .
+
+# Generate Swagger API documentation before building
+RUN swag init -g ./cmd/api/main.go -o ./docs
 
 # Build the binary: static binary for Linux, no CGO
 # Using BuildKit cache mounts to speed up compilation
