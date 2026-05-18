@@ -19,17 +19,17 @@ env:
   AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
   ALB_DNS_NAME: ${{ secrets.ALB_DNS_NAME }}
   # Database & Cache (Secrets)
-  MONGO_URI: ${{ secrets.MONGO_URI }}
-  REDIS_ADDR: ${{ secrets.REDIS_ADDR }}
-  REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+  MONGO_URI: ${{ secrets.BACKEND_MONGO_URI }}
+  REDIS_ADDR: ${{ secrets.BACKEND_REDIS_ADDR }}
+  REDIS_PASSWORD: ${{ secrets.BACKEND_REDIS_PASSWORD }}
   # Application Configuration (Secrets & Variables)
-  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_SECRET_KEY: ${{ secrets.BACKEND_JWT_SECRET_KEY }}
   PORT: ${{ vars.BACKEND_PORT || '8080' }}
-  DB_NAME: ${{ vars.DB_NAME || 'much_todo_db' }}
-  JWT_EXPIRATION_HOURS: ${{ vars.JWT_EXPIRATION_HOURS || '72' }}
-  ENABLE_CACHE: ${{ vars.ENABLE_CACHE || 'true' }}
-  LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
-  LOG_FORMAT: ${{ vars.LOG_FORMAT || 'json' }}
+  DB_NAME: ${{ vars.BACKEND_DB_NAME || 'much_todo_db' }}
+  JWT_EXPIRATION_HOURS: ${{ vars.BACKEND_JWT_EXPIRATION_HOURS || '72' }}
+  ENABLE_CACHE: ${{ vars.BACKEND_ENABLE_CACHE || 'true' }}
+  LOG_LEVEL: ${{ vars.BACKEND_LOG_LEVEL || 'INFO' }}
+  LOG_FORMAT: ${{ vars.BACKEND_LOG_FORMAT || 'json' }}
 
 jobs:
   test:
