@@ -18,6 +18,18 @@ env:
   ASG_NAME: ${{ secrets.ASG_NAME }}
   AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
   ALB_DNS_NAME: ${{ secrets.ALB_DNS_NAME }}
+  # Database & Cache (Secrets)
+  MONGO_URI: ${{ secrets.MONGO_URI }}
+  REDIS_ADDR: ${{ secrets.REDIS_ADDR }}
+  REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+  # Application Configuration (Secrets & Variables)
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  PORT: ${{ vars.BACKEND_PORT || '8080' }}
+  DB_NAME: ${{ vars.DB_NAME || 'much_todo_db' }}
+  JWT_EXPIRATION_HOURS: ${{ vars.JWT_EXPIRATION_HOURS || '72' }}
+  ENABLE_CACHE: ${{ vars.ENABLE_CACHE || 'true' }}
+  LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
+  LOG_FORMAT: ${{ vars.LOG_FORMAT || 'json' }}
 
 jobs:
   test:
@@ -104,6 +116,16 @@ jobs:
           IMAGE_TAG=$(echo ${{ github.sha }} | cut -c1-7)
           docker build \
             --build-arg GO_VERSION=${{ env.GO_VERSION }} \
+            --build-arg PORT="${{ env.PORT }}" \
+            --build-arg MONGO_URI="${{ env.MONGO_URI }}" \
+            --build-arg DB_NAME="${{ env.DB_NAME }}" \
+            --build-arg JWT_SECRET_KEY="${{ env.JWT_SECRET_KEY }}" \
+            --build-arg JWT_EXPIRATION_HOURS="${{ env.JWT_EXPIRATION_HOURS }}" \
+            --build-arg ENABLE_CACHE="${{ env.ENABLE_CACHE }}" \
+            --build-arg REDIS_ADDR="${{ env.REDIS_ADDR }}" \
+            --build-arg REDIS_PASSWORD="${{ env.REDIS_PASSWORD }}" \
+            --build-arg LOG_LEVEL="${{ env.LOG_LEVEL }}" \
+            --build-arg LOG_FORMAT="${{ env.LOG_FORMAT }}" \
             -t $ECR_REPOSITORY:latest \
             -t $ECR_REPOSITORY:$IMAGE_TAG \
             .

@@ -1,34 +1,4 @@
 services:
-  mongodb:
-    image: mongo:8.0
-    container_name: mongodb
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: much_todo_db
-    volumes:
-      - mongo_data:/data/db
-      - mongodb_config:/data/configdb
-      - ./MuchToDo/mongodb.key:/data/keyfile/mongodb.key:ro
-    command:
-      [
-        "--replSet", "rs0",
-        "--bind_ip_all",
-        "--keyFile", "/data/keyfile/mongodb.key"
-      ]
-    healthcheck:
-      test: |
-        echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]}) }" | mongosh --port 27017 -u root -p example --authenticationDatabase admin --quiet
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
-    networks:
-      - backend
-
   backend:
     build:
       context: .
@@ -38,46 +8,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      MONGO_HOST: mongodb
-      MONGO_PORT: 27017
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_URI: "mongodb://root:example@mongodb:27017/much_todo_db?authSource=admin&replicaSet=rs0"
-      DB_NAME: much_todo_db
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_ADDR: redis:6379
-      PORT: 8080
-    depends_on:
-      mongodb:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - backend
-
-  redis:
-    image: redis:7.2
-    container_name: redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    command: ["redis-server", "--appendonly", "yes"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    volumes:
-      - redis_data:/data
-    networks:
-      - backend
-
-volumes:
-  mongo_data:
-  mongodb_config:
-  redis_data:
-
-networks:
-  backend:
-    driver: bridge
+      - PORT=8080
+      - MONGO_URI=${MONGO_URI}
+      - REDIS_ADDR=${REDIS_ADDR}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - DB_NAME=much_todo_db
+      - ENABLE_CACHE=true
