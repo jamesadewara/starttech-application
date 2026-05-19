@@ -60,7 +60,7 @@ jobs:
       - name: Code Quality - go vet
         working-directory: ./backend
         run: go vet ./...
-
+         
       - name: Code Quality - Staticcheck
         working-directory: ./backend
         run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
