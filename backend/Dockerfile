@@ -2,7 +2,7 @@
 # STAGE 1: Build the Go binary
 # ============================================
 # We use a specific Go version on Alpine (lightweight Linux)
-FROM golang:1.24-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 # Install git and ca-certificates (needed for fetching Go modules)
 RUN apk add --no-cache git ca-certificates
