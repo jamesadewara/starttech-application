@@ -2,7 +2,7 @@
 
 Welcome to the **StartTech Application Suite**! This repository contains the core application components for the StartTech platform: a high-performance React frontend and a robust Go API backend.
 
-For the corresponding infrastructure code, see the [starttech-infra](file:///c:/Users/pc/Documents/WORKSPACE/PROJECTS/startech/starttech-infra) repository.
+For the corresponding infrastructure code, see the [starttech-infra](/starttech-infra) repository.
 
 ---
 

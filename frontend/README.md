@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# StartTech Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React frontend for the StartTech full-stack application. It provides a highly responsive, modern user interface built with Vite, TypeScript, Tailwind CSS, and TanStack Router.
 
-Currently, two official plugins are available:
+## 🚀 Technologies Used
+* **Framework**: React 19 + TypeScript
+* **Build Tool**: Vite (for rapid HMR and optimized production builds)
+* **Styling**: Tailwind CSS for utility-first responsive design
+* **Routing**: TanStack Router (formerly React Location)
+* **State Management**: TanStack Query for data fetching and caching
+* **Deployment**: AWS S3 Static Website Hosting behind Amazon CloudFront CDN
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Local Development
 
-## React Compiler
+### Prerequisites
+* **Node.js**: Version 22 or higher.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Getting Started
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-## Expanding the ESLint configuration
+2. **Configure Environment Variables**
+   Create a `.env` file based on the provided example and set the backend API URL.
+   ```bash
+   cp .env.example .env
+   # Ensure VITE_API_BASE_URL points to your local Go backend or production ALB
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+3. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:5173`.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📦 Build & Production
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+To create a production-optimized build:
+```bash
+npm run build
+```
+This generates the static assets inside the `dist/` directory.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Code Quality
+Run ESLint to check for code quality and formatting issues:
+```bash
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔄 CI/CD Deployment
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Deployments to production are completely automated via **GitHub Actions**.
+When changes are merged into the `master` branch:
+1. **Build Job**: The pipeline runs `npm audit`, performs linting, and executes `npm run build`.
+2. **Deploy Job**: Using OIDC authentication, the pipeline syncs the `dist/` artifacts directly to the designated **Amazon S3** bucket.
+3. **Invalidation**: The pipeline automatically invalidates the **CloudFront** cache to ensure global users receive the latest application version immediately.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+See `.github/workflows/frontend-ci-cd.yml` in the root repository for the full pipeline definition.
