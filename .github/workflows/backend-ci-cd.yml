@@ -16,12 +16,9 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ASG_NAME: ${{ secrets.ASG_NAME }}
-  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
   ALB_DNS_NAME: ${{ secrets.ALB_DNS_NAME }}
-  # Database & Cache (Secrets)
+  # Database (Secrets)
   MONGO_URI: ${{ secrets.BACKEND_MONGO_URI }}
-  REDIS_ADDR: ${{ secrets.BACKEND_REDIS_ADDR }}
-  REDIS_PASSWORD: ${{ secrets.BACKEND_REDIS_PASSWORD }}
   # Application Configuration (Secrets & Variables)
   JWT_SECRET_KEY: ${{ secrets.BACKEND_JWT_SECRET_KEY }}
   PORT: ${{ vars.BACKEND_PORT || '8080' }}
@@ -100,7 +97,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -122,8 +120,6 @@ jobs:
             --build-arg JWT_SECRET_KEY="${{ env.JWT_SECRET_KEY }}" \
             --build-arg JWT_EXPIRATION_HOURS="${{ env.JWT_EXPIRATION_HOURS }}" \
             --build-arg ENABLE_CACHE="${{ env.ENABLE_CACHE }}" \
-            --build-arg REDIS_ADDR="${{ env.REDIS_ADDR }}" \
-            --build-arg REDIS_PASSWORD="${{ env.REDIS_PASSWORD }}" \
             --build-arg LOG_LEVEL="${{ env.LOG_LEVEL }}" \
             --build-arg LOG_FORMAT="${{ env.LOG_FORMAT }}" \
             -t $ECR_REPOSITORY:latest \
@@ -169,7 +165,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Trigger Rolling Update
