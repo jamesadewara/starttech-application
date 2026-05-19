@@ -27,7 +27,7 @@ cd "$(dirname "$0")/../frontend"
 
 # Build with the injected API URL
 echo "Building..."
-npm ci
+npm install
 VITE_API_BASE_URL="$VITE_API_BASE_URL" npm run build
 
 # Deploy to S3 with cache headers
