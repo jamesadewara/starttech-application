@@ -95,9 +95,13 @@ jobs:
 
       - name: Invalidate CloudFront Cache
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ env.CLOUDFRONT_ID }} \
-            --paths "/index.html" "/*"
+          if [ -n "${{ env.CLOUDFRONT_ID }}" ] && [ "${{ env.CLOUDFRONT_ID }}" != "disabled" ]; then
+            aws cloudfront create-invalidation \
+              --distribution-id ${{ env.CLOUDFRONT_ID }} \
+              --paths "/index.html" "/*"
+          else
+            echo "CloudFront ID is empty or disabled. Skipping invalidation."
+          fi
 
       - name: Verify Deployment
         run: |
