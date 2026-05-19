@@ -21,7 +21,6 @@ env:
   MONGO_URI: ${{ secrets.BACKEND_MONGO_URI }}
   # Application Configuration (Secrets & Variables)
   JWT_SECRET_KEY: ${{ secrets.BACKEND_JWT_SECRET_KEY }}
-  PORT: ${{ vars.BACKEND_PORT || '8080' }}
   DB_NAME: ${{ vars.BACKEND_DB_NAME || 'much_todo_db' }}
   JWT_EXPIRATION_HOURS: ${{ vars.BACKEND_JWT_EXPIRATION_HOURS || '72' }}
   ENABLE_CACHE: ${{ vars.BACKEND_ENABLE_CACHE || 'true' }}
@@ -58,16 +57,10 @@ jobs:
         working-directory: ./backend
         run: go test -v -race -coverprofile=coverage.out ./...
 
-      - name: Upload Coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: backend/coverage.out
-
       - name: Code Quality - go vet
         working-directory: ./backend
         run: go vet ./...
-
+         
       - name: Code Quality - Staticcheck
         working-directory: ./backend
         run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
@@ -119,7 +112,7 @@ jobs:
           IMAGE_TAG=$(echo ${{ github.sha }} | cut -c1-7)
           docker build \
             --build-arg GO_VERSION=${{ env.GO_VERSION }} \
-            --build-arg PORT="${{ env.PORT }}" \
+
             --build-arg MONGO_URI="${{ env.MONGO_URI }}" \
             --build-arg DB_NAME="${{ env.DB_NAME }}" \
             --build-arg JWT_SECRET_KEY="${{ env.JWT_SECRET_KEY }}" \
@@ -140,12 +133,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           exit-code: '0'
 
-      - name: Upload Trivy Scan
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: trivy-scan
-          path: trivy-results.sarif
+
 
       - name: Push to ECR
         run: |

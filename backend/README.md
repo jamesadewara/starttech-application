@@ -165,3 +165,15 @@ The `INTEGRATION=true` environment variable is required to explicitly enable the
   ```
 
 Refer to the `Makefile` for more available commands.
+
+---
+
+## 🔄 CI/CD Deployment
+
+Deployments to production are completely automated via **GitHub Actions**.
+When changes are merged into the `master` branch:
+1. **Test Job**: The pipeline runs Go unit tests, formatting checks, and vulnerability scans (`trivy`).
+2. **Build Job**: The application is compiled into a lightweight Alpine Docker image, tagged, and pushed directly to the **Amazon ECR** repository.
+3. **Deploy Job**: An AWS Auto Scaling Group Instance Refresh is triggered, performing a rolling update to replace old backend containers with zero downtime.
+
+See `.github/workflows/backend-ci-cd.yml` in the root repository for the full pipeline definition.
