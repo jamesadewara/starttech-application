@@ -2,7 +2,7 @@ name: Backend CI/CD
 
 on:
   push:
-    branches: [master]
+    branches: [master, staging]
     paths:
       - 'backend/**'
       - '.github/workflows/backend-ci-cd.yml'
