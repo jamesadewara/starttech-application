@@ -48,7 +48,10 @@ This runbook contains operational guides, incident playbooks, and troubleshootin
      ```
    - If it is locked due to memory leaks, trigger a manual rolling refresh:
      ```bash
-     ./scripts/deploy-backend.sh production <ecr-repo-url> <asg-name>
+     export ECR_REPOSITORY="839026370596.dkr.ecr.us-east-1.amazonaws.com/starttech-production-backend"
+export ASG_NAME="starttech-production-asg"
+     sudo -E bash ./scripts/deploy-backend.sh
+     ./scripts/deploy-backend.sh 
      ```
 
 ### Playbook 3: MongoDB Atlas / Redis Connection Failures
