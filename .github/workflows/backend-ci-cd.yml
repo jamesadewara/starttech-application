@@ -12,7 +12,7 @@ on:
       - 'backend/**'
 
 env:
-  GO_VERSION: '1.26.2'
+  GO_VERSION: '1.24'
   AWS_REGION: ${{ vars.AWS_REGION }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ASG_NAME: ${{ secrets.ASG_NAME }}
@@ -234,6 +234,7 @@ jobs:
 
       - name: Configure CloudWatch Alarms
         run: |
+          TG_SUFFIX=$(echo "${{ secrets.TARGET_GROUP_ARN }}" | sed 's|.*:targetgroup/|targetgroup/|')
           aws cloudwatch put-metric-alarm \
             --alarm-name starttech-backend-health-check \
             --metric-name HealthyHostCount \
@@ -243,4 +244,4 @@ jobs:
             --evaluation-periods 2 \
             --threshold 1 \
             --comparison-operator LessThanThreshold \
-            --dimensions Name=TargetGroup,Value=${{ secrets.TARGET_GROUP_ARN }}
+            --dimensions Name=TargetGroup,Value=$TG_SUFFIX
