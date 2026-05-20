@@ -4,6 +4,7 @@ This document describes the high-level system architecture, deployment strategy,
 
 ---
 
+
 ## Architecture Overview
 
 The StartTech application is a production-grade full-stack platform consisting of a React client, a Go API backend, a Redis caching tier, and a MongoDB persistent storage tier. The entire infrastructure is managed as code using **Terraform** and deployed on **Amazon Web Services (AWS)**.
