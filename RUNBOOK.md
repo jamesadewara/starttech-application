@@ -52,7 +52,7 @@ This runbook contains operational guides, incident playbooks, and troubleshootin
      export ASG_NAME="starttech-production-asg"
      sudo -E bash ./scripts/deploy-backend.sh
      ```
-
+ 
 ### Playbook 3: MongoDB Atlas / Redis Connection Failures
 **Symptom**: Application logs show `could not connect to MongoDB` or `Redis connection refused`.
 1. **Verify Database Credentials**:
