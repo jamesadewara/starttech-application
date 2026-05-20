@@ -162,6 +162,20 @@ jobs:
 
       - name: Trigger Rolling Update
         run: |
+          echo "Checking for in-progress instance refreshes..."
+          STATUS=$(aws autoscaling describe-instance-refreshes \
+            --auto-scaling-group-name ${{ env.ASG_NAME }} \
+            --query 'InstanceRefreshes[0].Status' --output text)
+          
+          if [ "$STATUS" == "InProgress" ] || [ "$STATUS" == "Pending" ]; then
+            echo "A refresh is already in progress ($STATUS). Cancelling it to start a new one..."
+            aws autoscaling cancel-instance-refresh --auto-scaling-group-name ${{ env.ASG_NAME }}
+            
+            # Small sleep to allow AWS to process the cancellation
+            sleep 10
+          fi
+
+          echo "Starting new instance refresh..."
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name ${{ env.ASG_NAME }} \
             --strategy Rolling \
