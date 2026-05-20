@@ -27,8 +27,8 @@ starttech-application/
 ---
 
 ## 📖 Essential Documentation
-- **System Architecture**: Detailed network topology and service layouts are in [ARCHITECTURE.md](file:///c:/Users/pc/Documents/WORKSPACE/PROJECTS/startech/starttech-application/ARCHITECTURE.md).
-- **Incident Runbook**: Trouble-shooting playbooks, alert mitigations, and log analysis queries are in [RUNBOOK.md](file:///c:/Users/pc/Documents/WORKSPACE/PROJECTS/startech/starttech-application/RUNBOOK.md).
+- **System Architecture**: Detailed network topology and service layouts are in [ARCHITECTURE.md](./ARCHITECTURE.md).
+- **Incident Runbook**: Trouble-shooting playbooks, alert mitigations, and log analysis queries are in [RUNBOOK.md](./RUNBOOK.md).
 
 ---
 
@@ -88,12 +88,12 @@ starttech-application/
 Deployments are automated through **GitHub Actions** workflows triggered on pushes/merges to the `master` branch.
 
 ### 1. Frontend Pipeline (S3 Native Static Hosting)
-Defined in [frontend-ci-cd.yml](file:///c:/Users/pc/Documents/WORKSPACE/PROJECTS/startech/starttech-application/.github/workflows/frontend-ci-cd.yml).
+Defined in [frontend-ci-cd.yml](./.github/workflows/frontend-ci-cd.yml).
 - **Build**: Audits dependencies (`npm audit`), runs lints, and compiles production React/Vite assets into `dist/`.
 - **Deploy**: Authenticates to AWS via secure OpenID Connect (OIDC), syncs static build assets to the S3 bucket with optimal cache-control parameters, and invalidates the CloudFront CDN distribution cache.
 
 ### 2. Backend Pipeline (EC2 Container Deployment)
-Defined in [backend-ci-cd.yml](file:///c:/Users/pc/Documents/WORKSPACE/PROJECTS/startech/starttech-application/.github/workflows/backend-ci-cd.yml).
+Defined in [backend-ci-cd.yml](./.github/workflows/backend-ci-cd.yml).
 - **Test**: Audits packages, executes Go unit tests, and validates code quality.
 - **Build**: Compiles the Go binary and packages it into a lightweight scratch-layer Alpine Docker image.
 - **Scan**: Performs automated container security vulnerability scans using **Trivy**.
