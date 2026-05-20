@@ -16,7 +16,7 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ASG_NAME: ${{ secrets.ASG_NAME }}
-  ALB_DNS_NAME: ${{ secrets.ALB_DNS_NAME }}
+  ALB_DNS_NAME: ${{ vars.ALB_DNS_NAME }}
   # Database (Secrets)
   MONGO_URI: ${{ secrets.BACKEND_MONGO_URI }}
   # Application Configuration (Secrets & Variables)

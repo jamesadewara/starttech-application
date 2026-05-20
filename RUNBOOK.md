@@ -49,9 +49,8 @@ This runbook contains operational guides, incident playbooks, and troubleshootin
    - If it is locked due to memory leaks, trigger a manual rolling refresh:
      ```bash
      export ECR_REPOSITORY="839026370596.dkr.ecr.us-east-1.amazonaws.com/starttech-production-backend"
-export ASG_NAME="starttech-production-asg"
+     export ASG_NAME="starttech-production-asg"
      sudo -E bash ./scripts/deploy-backend.sh
-     ./scripts/deploy-backend.sh 
      ```
 
 ### Playbook 3: MongoDB Atlas / Redis Connection Failures
@@ -76,8 +75,8 @@ export ASG_NAME="starttech-production-asg"
 #### Rolling Back Backend Deployments
 If a backend deployment introduces bugs, execute the rollback script immediately. The script automatically cancels any in-progress instance refresh, locates the previous stable AWS Launch Template version, and triggers a rolling replacement:
 ```bash
-# Usage: ./scripts/rollback.sh <environment> <asg-name>
-./scripts/rollback.sh production starttech-production-asg
+export ASG_NAME="starttech-production-asg"
+./scripts/rollback.sh
 ```
 
 #### Rolling Back Frontend Deployments
@@ -106,6 +105,27 @@ The backend uses standard Amazon Linux 2023. When security updates are released:
   - Run `go get -u ./...` and `go mod tidy` in the `backend` folder to update packages to secure versions.
 - For **Frontend** (NPM Audit):
   - Run `npm audit fix` in the `frontend` folder to automatically apply minor patches to Node modules.
+
+### Procedure 3: Manual Application Deployments
+If automated CI/CD pipelines in GitHub Actions are unavailable, you can perform manual deployments directly from your management terminal using environment variables to specify parameters.
+
+#### Manually Deploying the Backend
+Build and push the Go backend Docker container to ECR, then trigger a rolling update of the Auto Scaling Group:
+```bash
+export ECR_REPOSITORY="839026370596.dkr.ecr.us-east-1.amazonaws.com/starttech-production-backend"
+export ASG_NAME="starttech-production-asg"
+
+sudo -E bash ./scripts/deploy-backend.sh
+```
+
+#### Manually Deploying the Frontend
+Compile the React/Vite production assets and deploy them directly to the S3 bucket, then invalidate the CloudFront CDN cache:
+```bash
+export FRONTEND_S3_BUCKET="starttech-production-frontend-839026370596"
+export ALB_DNS_NAME="starttech-production-alb-427884223.us-east-1.elb.amazonaws.com"
+
+sudo -E bash ./scripts/deploy-frontend.sh
+```
 
 ---
 
