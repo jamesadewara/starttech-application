@@ -50,7 +50,7 @@ jobs:
         working-directory: ./frontend
         run: npm run build
         env:
-          VITE_API_BASE_URL: "http://${{ secrets.ALB_DNS_NAME }}"
+          VITE_API_BASE_URL: "http://${{ vars.ALB_DNS_NAME }}"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
