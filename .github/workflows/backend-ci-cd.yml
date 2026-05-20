@@ -11,6 +11,10 @@ on:
     paths:
       - 'backend/**'
 
+concurrency:
+  group: backend-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   GO_VERSION: '1.26.3'
   AWS_REGION: ${{ vars.AWS_REGION }}
