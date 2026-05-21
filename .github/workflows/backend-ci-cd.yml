@@ -240,7 +240,22 @@ jobs:
 
       - name: Configure CloudWatch Alarms
         run: |
-          TG_SUFFIX=$(echo "${{ secrets.TARGET_GROUP_ARN }}" | sed 's|.*:targetgroup/|targetgroup/|')
+          TG_ARN="${{ secrets.TARGET_GROUP_ARN }}"
+          if [ -z "$TG_ARN" ]; then
+            echo "TARGET_GROUP_ARN secret is empty, resolving dynamically from ASG: ${{ env.ASG_NAME }}..."
+            TG_ARN=$(aws autoscaling describe-auto-scaling-groups \
+              --auto-scaling-group-names ${{ env.ASG_NAME }} \
+              --query 'AutoScalingGroups[0].TargetGroupARNs[0]' \
+              --output text)
+            
+            if [ -z "$TG_ARN" ] || [ "$TG_ARN" == "None" ]; then
+              echo "Error: Could not resolve Target Group ARN"
+              exit 1
+            fi
+            echo "Resolved Target Group ARN: $TG_ARN"
+          fi
+          
+          TG_SUFFIX=$(echo "$TG_ARN" | sed 's|.*:targetgroup/|targetgroup/|')
           aws cloudwatch put-metric-alarm \
             --alarm-name starttech-backend-health-check \
             --metric-name HealthyHostCount \
